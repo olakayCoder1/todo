@@ -1,0 +1,5 @@
+pyvenv.cfg
+.env
+Lib/
+Scripts/
+

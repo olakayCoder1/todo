@@ -1,0 +1,165 @@
+
+{% load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Dashboard</title>
+
+    <style>
+        body{
+    background-color: hsla(180, 26%, 93%, 0.959);
+    padding: 0;
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+}
+p,h1,h2,h3{
+    margin: 0;
+    padding: 0;
+}
+p{
+    color: #6b6b6b;
+}
+
+header{
+    display: flex;
+    justify-content: space-between;
+    background-color: hsla(180, 26%, 93%, 0.959);
+    padding: 0 50px 0 50px;
+    position: sticky;
+    border-bottom: 1px solid rgb(143, 205, 238) ;
+    z-index: 1;
+    top: 0;
+    
+}
+.head-link{
+    float: right;
+}
+.head-link li{
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.head-link li a{
+    text-decoration: none;
+    color: darkgreen;
+}
+.head-link li:hover{
+    border: 1px solid black;
+    background-color: wheat;
+    border-radius: 5px;
+}
+ 
+    
+
+.main{
+    width: 50%;
+    margin: 50px 25%;
+    
+
+}
+.form-section{
+    width: 100%;
+    height: 80px;
+    background-color: rgb(169, 216, 241);
+    border: 1px solid rgb(198, 226, 241);
+    border-radius: 10px;
+    padding: 10px;
+}
+.form-section form input{
+    box-sizing: border-box;
+    border-radius: 5px;
+    
+}
+.add-to-task{
+    height: 50px;
+    width: 18%;
+    padding: 5px 10px 1px 10px;
+    font-size: 22px;
+    text-align: center;
+    border-radius: 10px;
+    box-sizing: border-box;
+    border: 1px solid rgb(198, 226, 241);
+    font-weight: 700;
+    outline: none;
+}
+.description{
+    height: 50px;
+    width: 75%;
+    padding: 1px 10px 2px 10px;
+    border: 1px solid rgb(198, 226, 241);
+    font-size: 18px;
+    text-align: center;
+    font-weight: 500;
+    outline: none;
+    
+}
+
+.todo-container{
+    width: 100%;
+    height: 70px;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid rgb(143, 205, 238);
+    border-radius: 10px;
+}
+.todo-action-date{
+    display: flex;
+    justify-content: space-between;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <div class="head-logo">
+            <img src="" alt="logo">
+        </div>
+        <ul class="head-link">
+            {% if user.is_authenticated%}
+            <li><a href="{% url 'home-page' %}">Home</a></li>
+            <li><a href="#">profile</a></li>
+            <li><a href="#">about</a></li>
+            <li><a href="{% url 'logout' %}">logout</a></li>
+            {%else%}
+            <li><a href="{% url 'login' %}">login</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
+            {%endif%}
+       
+        </ul>
+        
+    </header>
+    {% block content %}
+    <div class="main">
+        <div class="form-section">
+            <form role="form" method="POST" id="task-form">
+                {% csrf_token %}
+                <input type="text" name="description" placeholder="description" id="description"    class="description" required>
+                <button type="submit" value="Add Task" class="add-to-task">ADD</button>
+            </form>
+        </div>
+        <div class="todo-list">
+            <h2>TASKS</h2>
+            {% for task in tasks reversed %}
+            <div class="todo-container">
+                <p>{{ task.description}}</p><hr>
+                <div class="todo-action-date">
+                    <p class="todo-date">{{ task.created_at }}</p>
+                    <div class="todo-action">
+                        <button><a href="{% url 'edit-task'  task.id %}">Edit</a></button>
+                        <button><a href="{% url 'delete-task' task.id %}">Delete</a></button>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <h2>no task yet! Add one above</h2>
+            {% endfor%}    
+        </div>
+    </div>
+
+{% endblock %}
+
+</body>
+</html>
